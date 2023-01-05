@@ -61,8 +61,8 @@ namespace JustInTimeWeb.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("delete")]
-        public async Task<ActionResult> DeleteProject(DeleteProjectCommand command) //finds project by name
+        [HttpPost("delete")]
+        public async Task<ActionResult> DeleteProject(DeleteProjectCommand command) //finds project by ID
         {
             var result = await Mediator.Send(command);
             return Ok(result);
@@ -89,6 +89,14 @@ namespace JustInTimeWeb.Controllers
         // Deactivate project
         [HttpPost("deactivate")]
         public async Task<ActionResult> DeactivateProject(DeactivateProjectCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        // Activate project
+        [HttpPost("activate")]
+        public async Task<ActionResult> ActivateProject(ActivateProjectCommand command)
         {
             var result = await Mediator.Send(command);
             return Ok(result);

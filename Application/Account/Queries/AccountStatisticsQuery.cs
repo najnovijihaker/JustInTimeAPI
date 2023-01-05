@@ -55,16 +55,19 @@ namespace Application.Account.Queries
             {
                 var response = new AccountStatisticsResponseDto();
 
-                response.AccountId = account.Id;
-                response.Username = account.Username;
-                response.ProjectId = log.ProjectId;
-                response.HoursWorked = log.HoursWorked;
-                response.LogDate = log.Time;
+                var project = projects.FirstOrDefault(p => p.Id == log.ProjectId); 
+                if (project != null)
+                {
+                    response.AccountId = account.Id;
+                    response.Username = account.Username;
+                    response.ProjectId = log.ProjectId;
+                    response.HoursWorked = log.HoursWorked;
+                    response.LogDate = log.Time;
+                    var projectName = project.Name;
+                    response.ProjectName = projectName;
 
-                var projectName = projects.FirstOrDefault(p => p.Id == log.ProjectId).Name;
-                response.ProjectName = projectName;
-
-                statistics.Add(response);
+                    statistics.Add(response);
+                }
             }
 
             return statistics;

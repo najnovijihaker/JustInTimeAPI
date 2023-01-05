@@ -11,13 +11,17 @@
         public double WeeklyHours { get; set; }
         public double MonthlyHours { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsActivated { get; set; }
         public string LockedMessage { get; set; } = string.Empty;
+        public bool IsPunchedIn { get; set; } = false;
+        public bool IsOnBreak { get; set; }
 
         public AccountDto()
         {
         }
 
-        public AccountDto(int id, string firstName, string lastName, string userName, string email, string role, double weeklyHours, double monthlyHours, bool isLocked, string lockedMessage)
+        public AccountDto(int id, string firstName, string lastName, string userName, string email, string role, double weeklyHours,
+            double monthlyHours, bool isLocked, string lockedMessage, bool IsActivated, bool isPunchedIn, bool isOnBreak)
         {
             Id = id;
             FirstName = firstName;
@@ -29,6 +33,9 @@
             MonthlyHours = monthlyHours;
             IsLocked = isLocked;
             LockedMessage = lockedMessage;
+            this.IsActivated = IsActivated;
+            this.IsPunchedIn = isPunchedIn;
+            IsOnBreak = isOnBreak;
         }
     }
 }

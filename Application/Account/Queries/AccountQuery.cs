@@ -1,5 +1,7 @@
 ﻿using Application.Account.Dtos;
 using Application.Common;
+using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,8 +42,24 @@ namespace Application.Account.Queries
 
             var monthlyHours = GetMonthlyHours(AccountId);
 
+            // Check if account is punched in
+            var isPunched = false;
+            var isOnBreak = false;
+
+            var currentPunch = GetCurrentPunch(selectedAccount.Id);
+
+            if (currentPunch != null && currentPunch.Type == PunchType.In)
+            {
+                isPunched = true;
+            }
+            else if (currentPunch != null && currentPunch.Type == PunchType.BreakStart)
+            {
+                isOnBreak = true;
+            }
+
             var accountDto = new AccountDto(selectedAccount.Id, selectedAccount.FirstName, selectedAccount.LastName, selectedAccount.Username,
-                selectedAccount.Email, selectedAccount.role, weeklyHours, monthlyHours, selectedAccount.IsLocked, selectedAccount.LockedMessage);
+                selectedAccount.Email, selectedAccount.role, weeklyHours, monthlyHours,
+                selectedAccount.IsLocked, selectedAccount.LockedMessage, selectedAccount.IsActive, isPunched, isOnBreak);
 
             return accountDto;
         }
@@ -108,6 +126,16 @@ namespace Application.Account.Queries
 
             // Calculate the end of the month by setting the day to the last day of the month
             return new DateTime(currentDate.Year, currentDate.Month, DateTime.DaysInMonth(currentDate.Year, currentDate.Month));
+        }
+
+        private Punch GetCurrentPunch(int accoundId)
+        {
+            var punches = dataContext.Punches
+                .Where(p => p.AccountId == accoundId)
+                .OrderByDescending(p => p.TimeStamp)
+                .FirstOrDefault();
+
+            return punches;
         }
     }
 }

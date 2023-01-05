@@ -27,14 +27,23 @@ namespace JustInTimeWeb.Controllers
             return Ok(result);
         }
 
-        [HttpPost("create")]
-        public async Task<ActionResult<AuthResponseDto>> CreateAccount(CreateAccountCommand command)
+        //manually verifies account
+        [HttpPost("manually-activate")]
+        public async Task<ActionResult> ManuallyActivate(ManuallyActivateCommand command)
         {
             var result = await Mediator.Send(command);
             return Ok(result);
         }
 
-        [Authorize]
+        [HttpPost("create")]
+        public async Task<ActionResult<AuthResponseDto>> CreateAccount(CreateAccountCommand command)
+
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        //[Authorize]
         [HttpGet("{username}")]
         public async Task<ActionResult> LoadAccount(string username)
         {
@@ -57,7 +66,7 @@ namespace JustInTimeWeb.Controllers
         }
 
         [Authorize]
-        [HttpDelete("delete")]
+        [HttpPost("delete")]
         public async Task<ActionResult> DeleteAccount(DeleteAccountCommand command) //finds account by username
         {
             var result = await Mediator.Send(command);
@@ -90,6 +99,24 @@ namespace JustInTimeWeb.Controllers
         {
             var result = await Mediator.Send(new AccountStatisticsQuery(accountId));
 
+            return Ok(result);
+        }
+
+        //unlock account
+        [HttpPost("unlock")]
+        [Authorize]
+        public async Task<ActionResult> UnlockAccount(UnlockAccountCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        //Lock account
+        [HttpPost("lock")]
+        [Authorize]
+        public async Task<ActionResult> LockAccount(LockAccountCommand command)
+        {
+            var result = await Mediator.Send(command);
             return Ok(result);
         }
     }

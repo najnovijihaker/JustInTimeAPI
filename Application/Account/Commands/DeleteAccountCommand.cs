@@ -1,15 +1,16 @@
 ﻿using Application.Account.Dtos;
 using Application.Common;
+using Application.Project.Dtos;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Account.Commands
 {
-    public class DeleteAccountCommand : AccountDto, IRequest<string>
+    public class DeleteAccountCommand : AccountDto, IRequest<ResponseDto>
     {
     }
 
-    public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, string>
+    public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, ResponseDto>
     {
         private readonly IDataContext dataContext;
 
@@ -18,15 +19,18 @@ namespace Application.Account.Commands
             this.dataContext = dataContext;
         }
 
-        public async Task<string> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
         {
             var account = await dataContext.Accounts.FirstOrDefaultAsync(a => a.Username == request.UserName);
-            if (account == null) return "Account not found";
+            if (account == null)
+            {
+                return new ResponseDto("Account not found");
+            }
 
             dataContext.Accounts.Remove(account);
             await dataContext.SaveChangesAsync(cancellationToken);
 
-            return "Account records erased";
+            return new ResponseDto("Account records erased");
         }
     }
 }

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Project.Commands
 {
-    public class DeleteProjectCommand : ProjectDto, IRequest<string>
+    public class DeleteProjectCommand : ProjectDto, IRequest<ResponseDto>
     {
     }
 
-    public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, string>
+    public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, ResponseDto>
     {
         private readonly IDataContext dataContext;
 
@@ -18,15 +18,18 @@ namespace Application.Project.Commands
             this.dataContext = dataContext;
         }
 
-        public async Task<string> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
         {
-            var project = await dataContext.Projects.FirstOrDefaultAsync(a => a.Name == request.Name);
-            if (project == null) return "Project not found";
+            var project = await dataContext.Projects.FirstOrDefaultAsync(a => a.Id == request.Id);
+            if (project == null)
+            {
+                return new ResponseDto("No project found");
+            }
 
             dataContext.Projects.Remove(project);
             await dataContext.SaveChangesAsync(cancellationToken);
 
-            return "Project records erased";
+            return new ResponseDto("Project records erased");
         }
     }
 }

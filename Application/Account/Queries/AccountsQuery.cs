@@ -40,6 +40,8 @@ namespace Application.User.Queries
                 account.UserName = eAccount.Username;
                 account.Email = eAccount.Email;
                 account.Role = eAccount.role;
+                account.IsActivated = eAccount.IsActive;
+                account.IsLocked = eAccount.IsLocked;
 
                 accounts.Add(account);
             }

@@ -54,7 +54,7 @@ namespace Application.Account.Commands
                 eAccount.role = "Developer";
             }
 
-            eAccount.IsActive = true; // disable verification only for beta v1.0.0
+            eAccount.IsActive = false;
 
             await dataContext.AddEntityToGraph(eAccount);
             await dataContext.SaveChangesAsync();
