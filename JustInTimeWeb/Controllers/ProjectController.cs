@@ -9,6 +9,7 @@ namespace JustInTimeWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProjectController : BaseApiController
     {
         #region project CRUD

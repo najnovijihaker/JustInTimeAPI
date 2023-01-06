@@ -19,7 +19,8 @@ namespace JustInTimeWeb.Controllers
             return Ok(result);
         }
 
-        //reset password
+        //Admin reset password
+        [Authorize]
         [HttpPost("reset")]
         public async Task<ActionResult> Reset(ResetPasswordCommand command)
         {
@@ -29,6 +30,7 @@ namespace JustInTimeWeb.Controllers
 
         //manually verifies account
         [HttpPost("manually-activate")]
+        [Authorize]
         public async Task<ActionResult> ManuallyActivate(ManuallyActivateCommand command)
         {
             var result = await Mediator.Send(command);
@@ -43,8 +45,8 @@ namespace JustInTimeWeb.Controllers
             return Ok(result);
         }
 
-        //[Authorize]
         [HttpGet("{username}")]
+        [Authorize]
         public async Task<ActionResult> LoadAccount(string username)
         {
             var result = await Mediator.Send(new AccountQuery(username));
@@ -93,7 +95,7 @@ namespace JustInTimeWeb.Controllers
         }
 
         // Returns hours for all projects user has contributed to
-        //[Authorize]
+        [Authorize]
         [HttpGet("statistics/{accountId}")]
         public async Task<ActionResult> GetAccountStatistics(int accountId)
         {

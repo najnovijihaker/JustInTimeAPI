@@ -1,11 +1,13 @@
 ﻿using Application.TimeKeep.Commands;
 using Application.TimeKeep.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JustInTimeWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TimekeepController : BaseApiController
     {
         [HttpGet("monthly")]

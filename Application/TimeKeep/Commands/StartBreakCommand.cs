@@ -31,7 +31,7 @@ namespace Application.TimeKeep.Commands
         {
             var punchHelper = new PunchHelper(dataContext);
 
-            var currentPunch = punchHelper.GetCurrentPunch(request.AccountId);
+            var currentPunch = punchHelper.GetCurrentPunchByAccountId(request.AccountId);
 
             if (currentPunch == null || currentPunch.Type == PunchType.Out)
             {

@@ -12,7 +12,7 @@ namespace Application.Common.Helpers
             this.dataContext = dataContext;
         }
 
-        public Punch GetCurrentPunch(int accountId)
+        public Punch GetCurrentPunchByAccountId(int accountId)
         {
             var result = dataContext.Punches
                 .Where(p => p.AccountId == accountId)
