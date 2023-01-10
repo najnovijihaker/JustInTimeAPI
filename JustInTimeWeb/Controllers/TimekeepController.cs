@@ -50,5 +50,12 @@ namespace JustInTimeWeb.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpGet("accountsIn")]
+        public async Task<ActionResult> GetClockedAccounts()
+        {
+            var result = await Mediator.Send(new ClockedAccountsQuery());
+            return Ok(result);
+        }
     }
 }

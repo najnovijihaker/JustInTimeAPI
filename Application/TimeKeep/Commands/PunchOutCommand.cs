@@ -50,14 +50,14 @@ namespace Application.TimeKeep.Commands
             var punch = new Punch(request.AccountId, currentPunch.ProjectId, DateTime.Now, PunchType.Out);
 
             await dataContext.Punches.AddAsync(punch, cancellationToken);
-
+            var timeWorked = 0.0;
             // calculate and log hours
             if (currentPunch != null)
             {
                 var punchHelper = new PunchHelper(dataContext);
                 var deductions = punchHelper.CalculateBreakTime(request.AccountId);
 
-                var timeWorked = ((DateTime.Now - currentPunch.TimeStamp).TotalHours) - deductions;
+                timeWorked = ((DateTime.Now - currentPunch.TimeStamp).TotalHours) - deductions;
 
                 ETimeKeep timeKeep = new()
                 {
@@ -72,7 +72,7 @@ namespace Application.TimeKeep.Commands
 
             await dataContext.SaveChangesAsync(cancellationToken);
 
-            return new ResponseDto("Punched Out and hours logged");
+            return new ResponseDto($"Punched Out and {timeWorked} hours logged");
         }
 
         private Punch GetCurrentPunch(int employeeId)
