@@ -1,17 +1,11 @@
-﻿using Application.Account.Dtos;
-using Application.Common;
+﻿using Application.Common;
 using Application.Common.Helpers;
 using Application.Project.Dtos;
 using Application.TimeKeep.Dtos;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ETimeKeep = Domain.Entities.TimeKeeping;
 
 namespace Application.TimeKeep.Commands
@@ -32,10 +26,12 @@ namespace Application.TimeKeep.Commands
         public async Task<ResponseDto> Handle(PunchOutCommand request, CancellationToken cancellationToken)
         {
             AccountHelper helper = new AccountHelper(dataContext);
+
             if (!helper.ExistsById(request.AccountId))
             {
                 return new ResponseDto("Account not found!");
             }
+
             // Check if employee is already punched in
             var currentPunch = GetCurrentPunch(request.AccountId);
             if (currentPunch == null)
@@ -51,6 +47,7 @@ namespace Application.TimeKeep.Commands
 
             await dataContext.Punches.AddAsync(punch, cancellationToken);
             var timeWorked = 0.0;
+
             // calculate and log hours
             if (currentPunch != null)
             {
@@ -67,6 +64,15 @@ namespace Application.TimeKeep.Commands
                     ProjectId = currentPunch.ProjectId
                 };
 
+                var punches = await dataContext.Punches.Where(x => x.AccountId == request.AccountId).ToListAsync();
+
+                if (punches != null)
+                {
+                    foreach (var p in punches)
+                    {
+                        dataContext.Punches.Remove(p);
+                    }
+                }
                 await dataContext.TimeKeep.AddAsync(timeKeep);
             }
 

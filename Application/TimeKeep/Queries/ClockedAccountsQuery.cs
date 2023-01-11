@@ -1,10 +1,8 @@
 ﻿using Application.Common;
-using Application.Project.Dtos;
 using Application.TimeKeep.Dtos.Response;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SendGrid.Helpers.Mail;
 
 namespace Application.TimeKeep.Queries
 {
@@ -25,12 +23,11 @@ namespace Application.TimeKeep.Queries
         {
             var currentPunches = await dataContext.Punches
             .Where(p => p.Type == PunchType.In)
-            .GroupBy(p => p.AccountId)
-            .Select(g => g.OrderByDescending(p => p.TimeStamp).FirstOrDefault()).ToListAsync();
+            .ToListAsync();
 
             if (currentPunches == null)
             {
-                throw new Exception("No Punches found");
+                throw new Exception("No Punches Currently");
             }
 
             return new PunchesQueryDto(currentPunches);
