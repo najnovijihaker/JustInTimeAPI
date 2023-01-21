@@ -176,5 +176,29 @@ namespace Application.Common
         }
 
         #endregion SEND LOCKED ALERT
+
+        #region SEND GENERATED PASSWORD
+
+        public async void SendNewPassowrd(string password, EAccount user)
+        {
+            Environment.SetEnvironmentVariable("SENDGRID_API_KEY", ApiKey);
+
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+
+            var client = new SendGridClient(apiKey);
+
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(FromEmail, "JustInTime"),
+                Subject = "JustInTime New Password",
+                HtmlContent = $"<h1> Your Password Has Been Reset </h1>" +
+                $"<p>Your new password: {password}</p>" +
+                $"<i> Make sure to change this password </i>"
+            };
+            msg.AddTo(new EmailAddress($"{user.Email}", $"{user.FirstName + " " + user.LastName}"));
+            await client.SendEmailAsync(msg);
+        }
+
+        #endregion SEND GENERATED PASSWORD
     }
 }

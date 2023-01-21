@@ -66,6 +66,8 @@ namespace Application.TimeKeep.Commands
 
                 var punches = await dataContext.Punches.Where(x => x.AccountId == request.AccountId).ToListAsync();
 
+                //remove punch in from database
+
                 if (punches != null)
                 {
                     foreach (var p in punches)

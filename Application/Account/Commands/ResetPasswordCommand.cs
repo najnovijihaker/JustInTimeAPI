@@ -1,17 +1,19 @@
 ﻿using Application.Account.Dtos.Request;
 using Application.Common;
+using Application.Project.Dtos;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Application.Account.Commands
 {
-    public class ResetPasswordCommand : ResetPasswordDto, IRequest<string>
+    public class ResetPasswordCommand : ResetPasswordDto, IRequest<ResponseDto>
     {
     }
 
-    public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, string>
+    public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, ResponseDto>
     {
         private readonly IDataContext dataContext;
         private readonly IConfiguration configuration;
@@ -22,19 +24,43 @@ namespace Application.Account.Commands
             this.configuration = configuration;
         }
 
-        public async Task<string?> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
-            var account = dataContext.Accounts.FirstOrDefault(a => a.Email == request.Email);
-            if (account == null) return null;
+            var account = await dataContext.Accounts.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
+            if (account == null)
+            {
+                return new ResponseDto("Account not found");
+            }
 
-            account.PasswordSalt = null;
+            var eHelper = new Emailer();
+
             account.PasswordHash = null;
+            account.PasswordSalt = null;
 
-            CreatePassowrdHash(request.ConfirmNewPassword, out byte[] hash, out byte[] salt);
-            account.PasswordSalt = salt;
+            var newPassword = GenerateRandomPassowrd();
+
+            CreatePassowrdHash(newPassword, out byte[] hash, out byte[] salt);
+
             account.PasswordHash = hash;
+            account.PasswordSalt = salt;
 
-            return "Sucessful";
+            await dataContext.SaveChangesAsync(cancellationToken);
+
+            eHelper.SendNewPassowrd(newPassword, account);
+
+            return new ResponseDto("Password Reset email sent");
+        }
+
+        // returns a randomly generated 8 digit password
+        private string GenerateRandomPassowrd()     //TODO
+        {
+            const int length = 8;
+            var random = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[length];
+            random.GetBytes(randomBytes);
+            var characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=,.<>/?;:'\"[]{}\\|`~";
+            var password = new string(randomBytes.Select(x => characters[x % characters.Length]).ToArray());
+            return password;
         }
 
         private void CreatePassowrdHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

@@ -19,8 +19,7 @@ namespace JustInTimeWeb.Controllers
             return Ok(result);
         }
 
-        //Admin reset password
-        [Authorize]
+        //User reset password by email
         [HttpPost("reset")]
         public async Task<ActionResult> Reset(ResetPasswordCommand command)
         {
