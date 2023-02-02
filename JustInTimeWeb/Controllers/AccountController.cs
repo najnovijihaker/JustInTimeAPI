@@ -20,8 +20,18 @@ namespace JustInTimeWeb.Controllers
         }
 
         //User reset password by email
-        [HttpPost("reset")]
-        public async Task<ActionResult> Reset(ResetPasswordCommand command)
+        [HttpPost("forgot-password")]
+        public async Task<ActionResult> Reset(ForgotPasswordCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        // User resets password
+        // Finds user by email
+        [HttpPatch("change-password")]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword(ChangePasswordCommand command)
         {
             var result = await Mediator.Send(command);
             return Ok(result);

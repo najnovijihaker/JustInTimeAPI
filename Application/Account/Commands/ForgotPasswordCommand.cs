@@ -9,27 +9,27 @@ using System.Text;
 
 namespace Application.Account.Commands
 {
-    public class ResetPasswordCommand : ResetPasswordDto, IRequest<ResponseDto>
+    public class ForgotPasswordCommand : ResetPasswordDto, IRequest<ResponseDto>
     {
     }
 
-    public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, ResponseDto>
+    public class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswordCommand, ResponseDto>
     {
         private readonly IDataContext dataContext;
         private readonly IConfiguration configuration;
 
-        public ResetPasswordCommandHandler(IDataContext dataContext, IConfiguration configuration)
+        public ForgotPasswordCommandHandler(IDataContext dataContext, IConfiguration configuration)
         {
             this.dataContext = dataContext;
             this.configuration = configuration;
         }
 
-        public async Task<ResponseDto> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
         {
             var account = await dataContext.Accounts.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
             if (account == null)
             {
-                return new ResponseDto("Account not found");
+                throw new Exception("Account not found");
             }
 
             var eHelper = new Emailer();
@@ -46,13 +46,15 @@ namespace Application.Account.Commands
 
             await dataContext.SaveChangesAsync(cancellationToken);
 
-            eHelper.SendNewPassowrd(newPassword, account);
+            //eHelper.SendNewPassowrd(newPassword, account);
+
+            Console.WriteLine(newPassword);
 
             return new ResponseDto("Password Reset email sent");
         }
 
         // returns a randomly generated 8 digit password
-        private string GenerateRandomPassowrd()     //TODO
+        private string GenerateRandomPassowrd()
         {
             const int length = 8;
             var random = new RNGCryptoServiceProvider();

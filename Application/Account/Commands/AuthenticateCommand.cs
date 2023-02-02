@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using EAccount = Domain.Entities.Account;
 
 namespace Application.Account.Commands
@@ -52,13 +53,21 @@ namespace Application.Account.Commands
             return new AuthResponseDto(200, "Authorized", CreateJWT(Account));
         }
 
-        private bool VerifyPasswordHash(string password, byte[] hash, byte[] salt)
+        private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
-            using (var hmac = new HMACSHA512(salt))
+            using (var hmac = new HMACSHA512(storedSalt))
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(hash);
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != storedHash[i])
+                    {
+                        return false;
+                    }
+                }
             }
+
+            return true;
         }
 
         private string CreateJWT(EAccount account)

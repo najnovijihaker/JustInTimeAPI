@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Account.Commands
 {
-    public class UpdateAccountCommand : AccountDto, IRequest<string>
+    public class UpdateAccountCommand : AccountDto, IRequest<ResponseDto>
     {
     }
 
-    public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, string>
+    public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand, ResponseDto>
     {
         private readonly IDataContext dataContext;
 
@@ -19,12 +19,13 @@ namespace Application.Account.Commands
             this.dataContext = dataContext;
         }
 
-        public async Task<string> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDto> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
         {
             var account = await dataContext.Accounts.FirstOrDefaultAsync(a => a.Id == request.Id);
             if (account == null)
             {
-                return "Account not found";
+                throw new Exception("Account not found");
+                //return new ResponseDto("Accuont NA");
             }
 
             if (request.FirstName != account.FirstName)
@@ -43,14 +44,10 @@ namespace Application.Account.Commands
             {
                 account.Email = request.Email;
             }
-            if (request.Role != account.role)
-            {
-                account.role = request.Role;
-            }
 
             await dataContext.SaveChangesAsync(cancellationToken);
 
-            return "Successful";
+            return new ResponseDto("Successful");
         }
     }
 }

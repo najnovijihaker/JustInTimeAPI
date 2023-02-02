@@ -34,7 +34,7 @@
             IsLocked = isLocked;
             LockedMessage = lockedMessage;
             this.IsActivated = IsActivated;
-            this.IsPunchedIn = isPunchedIn;
+            IsPunchedIn = isPunchedIn;
             IsOnBreak = isOnBreak;
         }
     }

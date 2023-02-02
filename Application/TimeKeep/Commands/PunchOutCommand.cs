@@ -29,19 +29,21 @@ namespace Application.TimeKeep.Commands
 
             if (!helper.ExistsById(request.AccountId))
             {
-                return new ResponseDto("Account not found!");
+                //return new ResponseDto("Account not found!");
+                throw new Exception("Account not found");
             }
 
             // Check if employee is already punched in
             var currentPunch = GetCurrentPunch(request.AccountId);
             if (currentPunch == null)
             {
-                return new ResponseDto("Unexpected error");
+                //return new ResponseDto("Unexpected error");
+                throw new Exception("User not punched in");
             }
 
             if (currentPunch != null && currentPunch.Type == PunchType.Out)
             {
-                return new ResponseDto("Employee is already punched out.");
+                throw new Exception("Employee is already punched out.");
             }
             var punch = new Punch(request.AccountId, currentPunch.ProjectId, DateTime.Now, PunchType.Out);
 
