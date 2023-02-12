@@ -130,5 +130,22 @@ namespace JustInTimeWeb.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        // Assign project to account
+        [HttpPost("add-project")]
+        [Authorize]
+        public async Task<ActionResult> AssignProject(AssignProjectCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpGet("myprojects")]
+        [Authorize]
+        public async Task<ActionResult> GetMyProjects(int accountId)
+        {
+            var result = await Mediator.Send(new MyProjectsQuery(accountId));
+            return Ok(result);
+        }
     }
 }

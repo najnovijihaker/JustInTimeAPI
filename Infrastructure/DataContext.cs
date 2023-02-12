@@ -17,6 +17,7 @@ namespace Infrastructure
         public DbSet<Team> Teams { get; set; }
         public DbSet<TimeKeeping> TimeKeep { get; set; }
         public DbSet<Punch> Punches { get; set; }
+        public DbSet<AccountProjects> AccountProjects { get; set; }
 
         public Task AddEntityToGraph<T>(T entity)
         {

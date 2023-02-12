@@ -13,6 +13,7 @@ namespace Application.Common
         public DbSet<Team> Teams { get; set; }
         public DbSet<TimeKeeping> TimeKeep { get; set; }
         public DbSet<Punch> Punches { get; set; }
+        public DbSet<AccountProjects> AccountProjects { get; set; }
 
         Task AddEntityToGraph<T>(T entity);
 
