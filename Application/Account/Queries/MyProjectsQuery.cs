@@ -2,6 +2,7 @@
 using Application.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using EProject = Domain.Entities.Project;
 
 namespace Application.Account.Queries
 {
@@ -26,15 +27,26 @@ namespace Application.Account.Queries
 
         public async Task<MyProjectsDto> Handle(MyProjectsQuery request, CancellationToken cancellationToken)
         {
-            var projects = await dataContext.AccountProjects
-                                      .Where(x => x.AccountId == request.accountId)
-                                      .Join(dataContext.Projects,
-                                            accountProject => accountProject.ProjectId,
-                                            project => project.Id,
-                                            (accountProject, project) => project)
-                                      .ToListAsync(cancellationToken);
+            var myProjects = await dataContext.AccountProjects
+                .Where(x => x.AccountId == request.accountId)
+                .Join(dataContext.Projects,
+                 accountProject => accountProject.ProjectId,
+                 project => project.Id,
+                (accountProject, project) => project)
+                .ToListAsync(cancellationToken);
 
-            return new MyProjectsDto(projects);
+            return new MyProjectsDto(myProjects);
+
+            // get all of the accountProjects record for user
+            //var accountProjects = await dataContext.AccountProjects.Where(x => x.AccountId == request.accountId).ToListAsync(cancellationToken);
+            //var projects = new List<EProject>();
+
+            //foreach (var record in accountProjects)
+            //{
+            //    projects.Add(await dataContext.Projects.FirstOrDefaultAsync(x => x.Id == record.ProjectId));
+            //}
+
+            //return new MyProjectsDto(projects);
         }
     }
 }

@@ -200,5 +200,33 @@ namespace Application.Common
         }
 
         #endregion SEND GENERATED PASSWORD
+
+        #region SEND PDF REPORT OF ACCOUNT
+
+        public async void sendMontlyReport(EAccount reciever, EAccount sender, byte[] pdfBytes)
+        {
+            Environment.SetEnvironmentVariable("SENDGRID_API_KEY", ApiKey);
+
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+
+            var client = new SendGridClient(apiKey);
+
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(FromEmail, "JustInTime"),
+                Subject = $"New PDF Report for {sender.FirstName} {sender.LastName}",
+                HtmlContent = $"<p>Attached is a automatically generated PDF report for {sender.FirstName} {sender.LastName} for {DateTime.Now.ToString("MMMM")} " +
+                $"{DateTime.Now.ToString("yyyy")}</p>"
+            };
+
+            msg.AddAttachment("test.pdf", Convert.ToBase64String(pdfBytes), "application/pdf");
+
+            //msg.AddTo(new EmailAddress($"{reciever.Email}", $"{reciever.FirstName + " " + reciever.LastName}"));
+            msg.AddTo(new EmailAddress("mateomajic01@gmail.com"));
+
+            await client.SendEmailAsync(msg);
+        }
+
+        #endregion SEND PDF REPORT OF ACCOUNT
     }
 }

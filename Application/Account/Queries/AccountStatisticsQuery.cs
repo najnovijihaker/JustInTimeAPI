@@ -41,21 +41,18 @@ namespace Application.Account.Queries
 
             if (account == null)
             {
-                //return new List<AccountStatisticsResponseDto>();
                 return null;
             }
 
             var accountProjects = await dataContext.TimeKeep
            .Where(x => x.AccountId == request.AccountId)
-           .ToListAsync();
-
-            //var lastProjectId = -1;
+           .ToListAsync(cancellationToken);
 
             foreach (var log in accountProjects)
             {
                 var response = new AccountStatisticsResponseDto();
 
-                var project = projects.FirstOrDefault(p => p.Id == log.ProjectId); 
+                var project = projects.FirstOrDefault(p => p.Id == log.ProjectId);
                 if (project != null)
                 {
                     response.AccountId = account.Id;

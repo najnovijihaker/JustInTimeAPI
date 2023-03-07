@@ -10,6 +10,8 @@ namespace Domain.Entities
     public class AccountProjects
     {
         [Key]
+        public int Id { get; set; }
+
         public int AccountId { get; set; }
 
         public int ProjectId { get; set; }

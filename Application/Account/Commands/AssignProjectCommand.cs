@@ -20,10 +20,10 @@ namespace Application.Account.Commands
             this.dataContext = dataContext;
         }
 
-        public async Task<ResponseDto> Handle(AssignProjectCommand request, CancellationToken cancellation)
+        public async Task<ResponseDto> Handle(AssignProjectCommand request, CancellationToken cancellatoinToken)
         {
-            var account = dataContext.Accounts.FirstOrDefaultAsync(x => x.Id == request.AccountId);
-            var project = dataContext.Projects.FirstOrDefault(x => x.Id == request.ProjectId);
+            var account = await dataContext.Accounts.FirstOrDefaultAsync(x => x.Id == request.AccountId);
+            var project = await dataContext.Projects.FirstOrDefaultAsync(x => x.Id == request.ProjectId || x.Name == request.ProjectName);
 
             if (account == null)
             {
@@ -35,13 +35,14 @@ namespace Application.Account.Commands
                 return new ResponseDto("Project not found");
             }
 
-            var accountProjects = new AccountProjects();
-
-            accountProjects.AccountId = request.AccountId;
-            accountProjects.ProjectId = request.ProjectId;
+            var accountProjects = new AccountProjects
+            {
+                AccountId = account.Id,
+                ProjectId = project.Id
+            };
 
             await dataContext.AccountProjects.AddAsync(accountProjects);
-            await dataContext.SaveChangesAsync(cancellation);
+            await dataContext.SaveChangesAsync(cancellatoinToken);
 
             return new ResponseDto("Successful");
         }

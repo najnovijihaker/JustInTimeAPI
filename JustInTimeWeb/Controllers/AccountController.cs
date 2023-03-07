@@ -140,11 +140,18 @@ namespace JustInTimeWeb.Controllers
             return Ok(result);
         }
 
-        [HttpGet("myprojects")]
+        [HttpGet("projects/{accountId}")]
         [Authorize]
         public async Task<ActionResult> GetMyProjects(int accountId)
         {
             var result = await Mediator.Send(new MyProjectsQuery(accountId));
+            return Ok(result);
+        }
+
+        [HttpPost("monthly/send")]
+        public async Task<ActionResult> SendReport(SendReportCommand command)
+        {
+            var result = await Mediator.Send(command);
             return Ok(result);
         }
     }

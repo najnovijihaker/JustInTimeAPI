@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Application.Account.Dtos.Request
 {
-    public class AssignProjectDto
+    public class SendReportRequestDto
     {
-        public int AccountId { get; set; }
-        public int ProjectId { get; set; }
-        public string? ProjectName { get; set; }
+        public int SenderId { get; set; }
+        public int RecieverId { get; set; }
     }
 }

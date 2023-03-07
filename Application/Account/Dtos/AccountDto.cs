@@ -21,7 +21,7 @@
         }
 
         public AccountDto(int id, string firstName, string lastName, string userName, string email, string role, double weeklyHours,
-            double monthlyHours, bool isLocked, string lockedMessage, bool IsActivated, bool isPunchedIn, bool isOnBreak)
+            double monthlyHours, bool isLocked, string lockedMessage, bool isActivated, bool isPunchedIn, bool isOnBreak)
         {
             Id = id;
             FirstName = firstName;
@@ -33,7 +33,7 @@
             MonthlyHours = monthlyHours;
             IsLocked = isLocked;
             LockedMessage = lockedMessage;
-            this.IsActivated = IsActivated;
+            IsActivated = isActivated;
             IsPunchedIn = isPunchedIn;
             IsOnBreak = isOnBreak;
         }
