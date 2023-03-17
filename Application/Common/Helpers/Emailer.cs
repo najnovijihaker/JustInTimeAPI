@@ -6,7 +6,7 @@ namespace Application.Common
 {
     public class Emailer
     {
-        private string ApiKey { get; set; } = "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";
+        private string? ApiKey { get; set; } = Environment.GetEnvironmentVariable("SENDGRID_KEY");
 
         private string FromEmail { get; set; } = "jit@mmserver.io";
 

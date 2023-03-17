@@ -29,7 +29,7 @@ namespace Application.TimeKeep.Queries
             foreach (var keep in timeKeeps)
             {
                 var e = new AccountStatisticsResponseDto();
-                e.LogDate = keep.Time;
+                //e.LogDate = keep.Time;
                 e.AccountId = keep.AccountId;
                 e.HoursWorked = keep.HoursWorked;
                 e.ProjectId = keep.ProjectId;

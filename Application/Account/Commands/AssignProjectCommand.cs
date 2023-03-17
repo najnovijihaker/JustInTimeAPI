@@ -35,6 +35,14 @@ namespace Application.Account.Commands
                 return new ResponseDto("Project not found");
             }
 
+            // check if user is already added to project
+            var control = await dataContext.AccountProjects.AnyAsync(x => x.ProjectId == project.Id && x.AccountId == account.Id);
+
+            if (control == true)
+            {
+                return new ResponseDto("User already added!");
+            }
+
             var accountProjects = new AccountProjects
             {
                 AccountId = account.Id,

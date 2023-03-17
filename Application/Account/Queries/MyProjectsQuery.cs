@@ -36,17 +36,6 @@ namespace Application.Account.Queries
                 .ToListAsync(cancellationToken);
 
             return new MyProjectsDto(myProjects);
-
-            // get all of the accountProjects record for user
-            //var accountProjects = await dataContext.AccountProjects.Where(x => x.AccountId == request.accountId).ToListAsync(cancellationToken);
-            //var projects = new List<EProject>();
-
-            //foreach (var record in accountProjects)
-            //{
-            //    projects.Add(await dataContext.Projects.FirstOrDefaultAsync(x => x.Id == record.ProjectId));
-            //}
-
-            //return new MyProjectsDto(projects);
         }
     }
 }

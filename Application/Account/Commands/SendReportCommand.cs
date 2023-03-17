@@ -52,29 +52,35 @@ namespace Application.Account.Commands
             }
 
             // generating PDF report
-            var writer = new PdfWriter($"{sender.LastName}_{sender.FirstName}_{DateTime.Now.ToString("MMM")}_{DateTime.Now.ToString("yyyy")}.pdf");
+            var fileName = $"{sender.LastName}_{sender.FirstName}_{DateTime.Now.ToString("MMM")}_{DateTime.Now.ToString("yyyy")}.pdf";
+            var writer = new PdfWriter(fileName);
             var report = new PdfDocument(writer);
 
             var doc = new Document(report);
 
+            // adding content
             doc.Add(new Paragraph($"{sender.LastName}, {sender.FirstName} - {DateTime.Now.ToString("MMMM")}, {DateTime.Now.ToString("yyyy")}")
                 .SetFontSize(30));
             doc.Add(new Paragraph($"Total H: {monthlyHours}h")).SetFontSize(20).SetHorizontalAlignment(HorizontalAlignment.CENTER).SetBold();
-            doc.Add(new Paragraph("Hours per project").SetFontSize(25));
+            doc.Add(new Paragraph("Hours per project").SetFontSize(14));
 
             foreach (var project in accountProjects)
             {
                 doc.Add(new Paragraph($"Worked Xh on {project.ProjectId}"));
             }
 
+            // closing the document to prevent memory leak
             doc.Close();
 
-            byte[] pdfBytes = File.ReadAllBytes("test.pdf");
+            byte[] pdfBytes = File.ReadAllBytes(fileName);
 
             Emailer emailer = new Emailer();
-            //emailer.sendMontlyReport(reciever, sender, pdfBytes);
+            emailer.sendMontlyReport(reciever, sender, pdfBytes);
 
-            return new ResponseDto("");
+            // Delete the file
+            File.Delete(fileName);
+
+            return new ResponseDto("Successful");
         }
 
         public double GetMonthlyHours(int accountId)

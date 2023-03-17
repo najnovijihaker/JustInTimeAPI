@@ -13,6 +13,5 @@ namespace Application.Account.Dtos.Response
         public string Username { get; set; } = string.Empty;
         public int AccountId { get; set; }
         public double HoursWorked { get; set; }
-        public DateTime LogDate { get; set; }
     }
 }
